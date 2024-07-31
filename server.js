@@ -8,7 +8,13 @@ const PORT=process.env.PORT || 3000;
 const bodyParser=require('body-parser');
 app.use(bodyParser.json()); // stores in req.boy
 
-app.get('/', function(req,res){
+// Middleware function
+const logRequest= (req,res,next)=>  {
+    console.log(`[${new Date().toLocaleString()}] Request Made to : ${req.orignalUrl}`);
+    next(); // Move to next phase
+}
+
+app.get('/', logRequest, function(req,res){
     res.send("Welcome to the Hotel!");
 })
 
