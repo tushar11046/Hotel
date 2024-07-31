@@ -54,7 +54,7 @@ const personRoutes=require('./Routes/personRoutes');
 const menuRoutes=require('./Routes/menuRoutes');
 
 // Use the routes
-app.use('/person',personRoutes);
+app.use('/person',localAuthMiddleware,personRoutes);
 //localAuthMiddleware
 app.use('/menu',menuRoutes);
 
