@@ -2,6 +2,8 @@ const express=require('express');
 const app=express();
 const db=require('./db');
 require('dotenv').config();
+const passport=require('./auth');
+
 
 const PORT=process.env.PORT || 3000;
 
@@ -10,17 +12,25 @@ app.use(bodyParser.json()); // stores in req.boy
 
 // Middleware function
 const logRequest= (req,res,next)=>  {
-    console.log(`[${new Date().toLocaleString()}] Request Made to : ${req.orignalUrl}`);
+    console.log(`[${new Date().toLocaleString()}] Request Made to : ${req.originalUrl}`);
     next(); // Move to next phase
 }
 
-app.get('/', logRequest, function(req,res){
+app.use(logRequest);
+
+app.use(passport.initialize()); // Authenticating route
+
+const localAuthMiddleware=passport.authenticate('local',{session:false});
+
+app.get('/', function(req,res){
     res.send("Welcome to the Hotel!");
 })
 
 app.get('/chicken',(req,res)=>{
     res.send("Chickne Order Succesfull!");
 })
+
+
 
 // const data=req.body;
 
@@ -44,7 +54,7 @@ const personRoutes=require('./Routes/personRoutes');
 const menuRoutes=require('./Routes/menuRoutes');
 
 // Use the routes
-app.use('/person',personRoutes);
+app.use('/person',localAuthMiddleware,personRoutes);
 app.use('/menu',menuRoutes);
 
 
